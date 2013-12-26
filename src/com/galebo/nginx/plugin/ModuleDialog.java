@@ -66,7 +66,7 @@ public class ModuleDialog extends BaseDialog {
 		create.setText("Create Nginx File");
 		create.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				MessageDialog.openInformation(shell, "", "in working..");
+				MessageDialog.openInformation(shell, "", "in working...");
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
