@@ -1,7 +1,10 @@
 package com.galebo.nginx.plugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -15,12 +18,14 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import com.galebo.nginx.Create;
 import com.galebo.nginx.Module;
 import com.galebo.nginx.Module.Parameter;
 
@@ -28,6 +33,7 @@ public class ModuleDialog extends BaseDialog {
 	protected Object result;
 
 	Module module = null;
+	Text text1;
 	TableViewer createTable;
 	public ModuleDialog(Shell parent, int style) {
 		super(parent);
@@ -43,7 +49,7 @@ public class ModuleDialog extends BaseDialog {
 		shell.setText("Add One Module");
 		Label info1 = new Label(shell, SWT.NONE);info1.setText("Module Name");
 
-		Text text1 = new Text(shell, SWT.BORDER | SWT.SINGLE);
+		text1 = new Text(shell, SWT.BORDER | SWT.SINGLE);
 
 
 		final Button addParameter = createAddParameterButton(shell);
@@ -66,7 +72,34 @@ public class ModuleDialog extends BaseDialog {
 		create.setText("Create Nginx File");
 		create.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				MessageDialog.openInformation(shell, "", "in working..");
+
+				if(text1.getText()==null){
+					MessageDialog.openInformation(shell, "", "name is null");
+					return ;
+				}
+				Module module1=new Module(text1.getText(),false);
+				for (Parameter parameter : module.getParameters()) {
+					module1.addParameter(parameter);
+				}
+				String msg="create ok";
+		        DirectoryDialog folderdlg=new DirectoryDialog(shell);
+		        folderdlg.setText("choose directory");
+		        folderdlg.setFilterPath("SystemDrive");
+		        folderdlg.setMessage("please choose save directory");
+		        String selecteddir=folderdlg.open();
+		        if(selecteddir==null){
+		        	msg="directory must select";
+		        }else{
+		        	Create create =new Create();
+		        	try {
+						String pathname = selecteddir+"/ngx_http_"+module1.getName()+"_module.c";
+						System.out.println(pathname);
+						FileUtils.writeStringToFile(new File(pathname),create.genFtlResult(module1));
+					} catch (IOException e1) {
+			        	msg="saveing has error："+e1.getMessage();
+					}
+		        }   
+				MessageDialog.openInformation(shell, "",msg);                 
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
