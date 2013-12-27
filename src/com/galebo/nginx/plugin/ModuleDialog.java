@@ -99,7 +99,7 @@ public class ModuleDialog extends BaseDialog {
 			        	msg="saveing has error："+e1.getMessage();
 					}
 		        }   
-				MessageDialog.openInformation(shell, "",msg);                 
+				MessageDialog.openInformation(shell, "",msg);
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
