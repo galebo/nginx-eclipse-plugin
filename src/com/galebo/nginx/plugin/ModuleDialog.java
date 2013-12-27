@@ -73,7 +73,7 @@ public class ModuleDialog extends BaseDialog {
 		create.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
 
-				if(text1.getText()==null){
+				if(text1.getText()==null||text1.getText().length()==0){
 					MessageDialog.openInformation(shell, "", "name is null");
 					return ;
 				}
